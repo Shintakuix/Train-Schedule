@@ -32,14 +32,14 @@ var config = {
      var timeFirstx = parseInt($("#first-time-input").val().trim());
      var tFrequency = parseInt($("#frequency-input").val().trim());
 
-     var tFirstConverted = moment(timeFirstx , "HH:mm").subtract(1, "years");
+     
 
      console.log(tName);
      console.log(tDestination);
      console.log(timeFirstx);
 
      console.log(tFrequency);
-     console.log(tFirstConverted);
+     
    
  // Creates local "temporary" object for holding train data
      var newTrain = {
@@ -83,25 +83,39 @@ var config = {
      console.log(trTime);
      console.log(trFreq);
    
-     // Prettify the employee start
-/*      var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
+     // Next Train 
+     var tFirstConverted = moment(trTime , "HH:mm").subtract(1, "years");
+     console.log(tFirstConverted);
+     
+     var currentTime = moment();
+     var diffTime = moment().diff(moment(tFirstConverted), "minutes");
+     console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+     console.log("DIFFERENCE IN TIME: " + diffTime);
+     console.log(diffTime);
    
-     // Calculate the months worked using hardcore math
-     // To calculate the months worked
-     var empMonths = moment().diff(moment(empStart, "X"), "months");
-     console.log(empMonths);
-   
-     // Calculate the total billed rate
-     var empBilled = empMonths * empRate;
-     console.log(empBilled); */
-   
+    var tRemainder = diffTime % trFreq;
+    console.log(tRemainder);
+
+    var tMinutes = trFreq - tRemainder;
+    console.log(tMinutes);
+
+    var nextArrival = moment().add(tMinutes, "minutes");
+    var nextTrain = moment(nextArrival).format("hh:mm");
+
+    if (tMinutes <= 0) {
+        tMinutes = "Now";
+        console.log()
+    }
+
+
+
      // Create the new row
      var newRow = $("<tr>").append(
        $("<td>").text(trName),
        $("<td>").text(trDest),
-       $("<td>").text(trTime),
        $("<td>").text(trFreq),
-       $("<td>").text("hello")
+       $("<td>").text(nextTrain),
+       $("<td>").text(tMinutes)
     
      );
    
