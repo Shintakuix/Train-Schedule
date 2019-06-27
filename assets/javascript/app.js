@@ -99,13 +99,15 @@ var config = {
     var tMinutes = trFreq - tRemainder;
     console.log(tMinutes);
 
-    var nextArrival = moment().add(tMinutes, "minutes");
-    var nextTrain = moment(nextArrival).format("hh:mm");
-
-    if (tMinutes <= 0) {
+    if (0 < tMinutes < 1) {
         tMinutes = "Now";
         console.log()
     }
+
+    var nextArrival = moment().add(tMinutes, "minutes");
+    var nextTrain = moment(nextArrival).format("hh:mm");
+
+
 
 
 
