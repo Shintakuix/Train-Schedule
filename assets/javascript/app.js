@@ -1,12 +1,3 @@
-// Steps to complete:
-
-// 1. Initialize Firebase
-// 2. Create button for adding new employees - then update the html + update the database
-// 3. Create a way to retrieve employees from the employee database.
-// 4. Create a way to calculate the months worked. Using difference between start and current time.
-//    Then use moment.js formatting to set difference in months.
-// 5. Calculate Total billed
-
 // 1. Initialize Firebase
 var config = {
     apiKey: "AIzaSyBLQ7Y7k6U51cjKK2t5XjNbLqUSqo-p5pk",
@@ -21,25 +12,24 @@ var config = {
    firebase.initializeApp(config);
    
    var database = firebase.database();
+
+  // function to pad start time to 4 digits
+
+   function padDigits(number, digits) {
+    return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
    
-   // 2. Button for adding Employees
-   $("#add-train-btn").on("click", function(event) {
-     event.preventDefault();
+   //Button for adding Trains
+   $("#add-train-btn").on("click", function() {
+     
    
      // Grabs user input
      var tName = $("#train-name-input").val().trim();
      var tDestination = $("#destination-input").val().trim();
-     var timeFirstx = parseInt($("#first-time-input").val().trim());
+     var timeFirstxy = $("#first-time-input").val().trim();
+     var timeFirstx = padDigits(timeFirstxy , "4");
      var tFrequency = parseInt($("#frequency-input").val().trim());
-
-     
-
-     console.log(tName);
-     console.log(tDestination);
-     console.log(timeFirstx);
-
-     console.log(tFrequency);
-     
+     console.log(timeFirstx);    
    
  // Creates local "temporary" object for holding train data
      var newTrain = {
@@ -52,7 +42,6 @@ var config = {
      // Uploads employee data to the database
      database.ref().push(newTrain);
    
-     // Logs everything to console
      console.log(newTrain.name);
      console.log(newTrain.dest);
      console.log(newTrain.ftime);
@@ -67,7 +56,7 @@ var config = {
      $("#frequency-input").val("");
    });
    
-   // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+   //Create Firebase event for adding trains to the database and a row in the html when a user adds an entry
    database.ref().on("child_added", function(childSnapshot) {
      console.log(childSnapshot.val());
    
@@ -76,18 +65,21 @@ var config = {
      var trDest = childSnapshot.val().dest;
      var trTime = childSnapshot.val().ftime;
      var trFreq = childSnapshot.val().freq;
-   
-     // Employee Info
+     
+  
      console.log(trName);
      console.log(trDest);
      console.log(trTime);
      console.log(trFreq);
    
      // Next Train 
-     var tFirstConverted = moment(trTime , "HH:mm").subtract(1, "years");
-     console.log(tFirstConverted);
+ 
      
      var currentTime = moment();
+     var tFirstConverted = moment(trTime, "HH:mm").subtract(1, "years");
+     console.log(currentTime);
+     
+     console.log(tFirstConverted);
      var diffTime = moment().diff(moment(tFirstConverted), "minutes");
      console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
      console.log("DIFFERENCE IN TIME: " + diffTime);
@@ -99,13 +91,10 @@ var config = {
     var tMinutes = trFreq - tRemainder;
     console.log(tMinutes);
 
-    if (0 < tMinutes < 1) {
-        tMinutes = "Now";
-        console.log()
-    }
+
 
     var nextArrival = moment().add(tMinutes, "minutes");
-    var nextTrain = moment(nextArrival).format("hh:mm");
+    var nextTrain = moment(nextArrival).format("HH:mm");
 
 
 
@@ -125,10 +114,4 @@ var config = {
      $("#new-row-here").append(newRow);
    });
    
-   // Example Time Math
-   // -----------------------------------------------------------------------------
-   // Assume Employee start date of January 1, 2015
-   // Assume current date is March 1, 2016
    
-   // We know that this is 15 months.
-   // Now we will create code in moment.js to confirm that any attempt we use meets this test case
